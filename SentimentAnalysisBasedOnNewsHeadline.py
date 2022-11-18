@@ -8,9 +8,9 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import matplotlib.pyplot as plt
 
 # Declaring all the variables 
-vocab_size = 10000
+vocab_size = 1000
 embedding_dim = 16
-max_length = 100
+max_length = 20
 trunc_type='post'
 padding_type='post'
 oov_tok = "<OOV>"
@@ -33,7 +33,7 @@ training_labels = labels[0:training_size]
 testing_labels = labels[training_size:]
 
 # Tokenizing all the words in the training sentences
-# most frequent 10000 words will be stored
+# most frequent 1000 words will be stored
 tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_tok)
 tokenizer.fit_on_texts(training_sentences)
 
@@ -62,7 +62,7 @@ model = tf.keras.Sequential([
 model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
 
 # Training the neural network model 
-num_epochs = 4
+num_epochs = 30
 history = model.fit(training_padded, training_labels, epochs=num_epochs, validation_data=(testing_padded, testing_labels), verbose=2)
 
 # Plotting the graph between epochs and accuracy of training and testing data 
@@ -71,14 +71,14 @@ def plot_graphs(history, string):
   plt.plot(history.history['val_'+string])
   plt.xlabel("Epochs")
   plt.ylabel(string)
-  plt.legend([string, 'val_'+string])
+  plt.legend(['training', 'testing'])
   plt.show()
   
 plot_graphs(history, "accuracy")
 plot_graphs(history, "loss")
 
 # Testing the model with different sentences 
-sentence = ["granny starting to fear spiders in the garden might be real", "game of thrones season finale showing this sunday night"]
+sentence = ["reports of movie being good reach area man","behind the scenes of an intricate fbi sting"]
 sequences = tokenizer.texts_to_sequences(sentence)
 padded = pad_sequences(sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
 print(model.predict(padded))
